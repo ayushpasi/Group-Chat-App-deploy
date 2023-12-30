@@ -15,10 +15,10 @@ const UserModel = sequelize.define("user", {
   email: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
   },
   mobile: {
     type: Sequelize.BIGINT(10),
-    unique: true,
     allowNull: false,
   },
   password: {

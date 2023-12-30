@@ -8,7 +8,12 @@ const cors = require("cors");
 const app = express();
 dotenv.config();
 app.use(express.static("public"));
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST"],
+  })
+);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
