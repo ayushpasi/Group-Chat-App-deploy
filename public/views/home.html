@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ChatterHub</title>
+    <!-- Bootstrap CSS CDN -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <style>
+      /* Custom CSS for the chat app */
+      body {
+        background-color: #f8f9fa; /* Light greyish background */
+        color: #333; /* Dark text color */
+      }
+
+      .navbar {
+        background-color: #007bff; /* Blue navbar background */
+        margin-bottom: 20px;
+      }
+
+      .navbar-brand {
+        font-weight: bold;
+        color: #fff; /* White text for brand */
+      }
+
+      .navbar-nav .nav-link {
+        color: #fff; /* White text for links */
+      }
+
+      .signup-btn {
+        background-color: grey; /* White for sign-up button */
+        border-color: #007bff; /* Blue border for sign-up button */
+        color: #007bff; /* Blue text color for sign-up button */
+        font-weight: bold;
+      }
+
+      .signup-btn:hover {
+        background-color: #0056b3; /* Darker blue on hover */
+        border-color: #0056b3;
+        color: #fff; /* White text color on hover */
+      }
+
+      .footer {
+        background-color: #007bff; /* Dark grey footer */
+        color: #fff; /* White text for footer */
+        padding: 20px 0;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+      }
+      .topBtn {
+        background-color: white;
+        border-color: white;
+        color: #293241;
+        margin-left: 8px;
+      }
+      .topBtn:hover {
+        background-color: #ffc107;
+        color: white;
+        border-color: #3d5a80;
+      }
+      /* Media queries for responsiveness */
+      @media (max-width: 767px) {
+        .col-md-7 img {
+          max-width: 100%;
+          height: auto;
+        }
+        .col-md-5 {
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <img
+            src="../images/logo.png"
+            width="40"
+            height="40"
+            class="d-inline-block align-top"
+            alt=""
+            style="border-radius: 30px; margin-left: 10px"
+          />
+          ChatterHub
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a
+                class="topBtn btn py-1"
+                data-toggle="modal"
+                data-target="#signup_modal"
+                >Sign Up</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="topBtn btn py-1" href="#">Sign In</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container text-center">
+      <div class="d-sm-flex align-items-center justify-content-between">
+        <div class="col-md-7">
+          <img src="../images/main img.png" alt="" class="img-fluid" />
+        </div>
+        <div class="col-md-5 text-black mt-4">
+          <h1>Become a <span class="text-warning">Member</span></h1>
+          <p class="lead my-4">
+            Where Every Message Ignites Happiness, Building Bonds One
+            Conversation at a Time
+          </p>
+          <button
+            class="btn btn-outline-primary btn-lg mb-3 mb-lg-0"
+            data-bs-toggle="modal"
+            data-bs-target="#signup_modal"
+          >
+            <a data-toggle="modal" data-target="#signup_modal">
+              Sign up for free</a
+            >
+          </button>
+
+          <!-- Add a spacer -->
+          <div style="margin-bottom: 10px"></div>
+
+          <button
+            class="btn btn-dark btn-lg"
+            data-bs-toggle="modal"
+            data-bs-target="#signin_modal"
+          >
+            Already have an account?
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Signup Modal -->
+
+    <div
+      class="modal fade"
+      id="signup_modal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="signupModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="signupModalLabel">Sign Up</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Add your signup form or content here -->
+            <form onsubmit="submitForm(event)" method="post">
+              <!-- Username Field -->
+              <div class="form-group">
+                <label for="name"> <i class="fas fa-user"></i> Username </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  placeholder="Enter your username"
+                />
+              </div>
+              <!-- Email Field -->
+              <div class="form-group">
+                <label for="email">
+                  <i class="fas fa-envelope"></i> Email address
+                </label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email"
+                />
+              </div>
+              <!-- Phone Number Field -->
+              <div class="form-group">
+                <label for="phone">
+                  <i class="fas fa-phone"></i> Phone Number
+                </label>
+                <input
+                  type="tel"
+                  class="form-control"
+                  id="mobile"
+                  name="mobile"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+              <!-- Password Field -->
+              <div class="form-group">
+                <label for="password">
+                  <i class="fas fa-lock"></i> Password
+                </label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  placeholder="Enter your password"
+                />
+              </div>
+
+              <!-- Sign Up Button -->
+              <div class="row">
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary btn-block">
+                    Sign Up
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer text-center">
+      <div class="container-fluid">
+        <p>&copy; 2023 Group Chat. All Rights Reserved.</p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS CDN (Optional for functionality like toggling collapse) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="../js/signUp.js"></script>
+    <!-- <script type="module" src="/js/home/helperFunctions.mjs"></script> -->
+    -->
+  </body>
+</html>
