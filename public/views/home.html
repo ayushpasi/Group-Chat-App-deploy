@@ -185,6 +185,11 @@
           </div>
           <div class="modal-body">
             <!-- Add your signup form or content here -->
+            <span
+              id="unsuccessfull"
+              style="color: red; font-weight: bold"
+            ></span>
+            <span id="success" style="color: green; font-weight: bold"></span>
             <form onsubmit="submitForm(event)" method="post">
               <!-- Username Field -->
               <div class="form-group">
@@ -261,8 +266,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script src="../js/signUp.js"></script>
-    <!-- <script type="module" src="/js/home/helperFunctions.mjs"></script> -->
-    -->
   </body>
 </html>
