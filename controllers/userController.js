@@ -1,6 +1,7 @@
 const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const path = require("path");
+const jwt = require("jsonwebtoken");
 
 const userSignup = async (req, res) => {
   const { name, email, mobile, password } = req.body;
@@ -44,5 +45,35 @@ const getHomePage = async (req, res, next) => {
     console.log(error);
   }
 };
+const generateAccessToken = (id, name) => {
+  return jwt.sign({ userId: id, name: name }, process.env.TOKEN_SECRET, {
+    expiresIn: "1h",
+  });
+};
+const postUserLogin = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const existingUser = await UserModel.findOne({ where: { email: email } });
+    if (existingUser) {
+      bcrypt.compare(password, existingUser.password, (err, result) => {
+        if (err) {
+          res.status(500).json({ error: "somthing went wrong" });
+        }
+        if (result == true) {
+          res.status(200).json({
+            message: "user logged in succesfully",
+            token: generateAccessToken(existingUser.id, existingUser.name),
+          });
+        } else {
+          res.status(401).json({ error: "User not authorized" });
+        }
+      });
+    } else {
+      res.status(404).json({ error: "User Not Found" });
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-module.exports = { userSignup, getHomePage };
+module.exports = { userSignup, getHomePage, postUserLogin };

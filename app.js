@@ -1,12 +1,13 @@
 const express = require("express");
 const dotenv = require("dotenv");
+dotenv.config();
 const userRouter = require("./routes/userRouter");
 const sequelize = require("./util/database");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
-dotenv.config();
+
 app.use(express.static("public"));
 app.use(
   cors({
