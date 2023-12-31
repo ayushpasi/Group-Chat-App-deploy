@@ -6,15 +6,20 @@ async function submitForm(event) {
   const password = document.getElementById("password").value;
   const mobile = document.getElementById("mobile").value;
 
-  try {
-    const response = await axios.post("http://localhost:3000/user/signup", {
-      name,
-      email,
-      mobile,
-      password,
-    });
+  const data = {
+    name,
+    email,
+    mobile,
+    password,
+  };
 
-    if (response.status == 200) {
+  try {
+    const response = await axios.post(
+      "http://localhost:3000/user/signup",
+      data
+    );
+
+    if (response.status === 200) {
       let success = document.getElementById("success");
       success.style.color = "green";
       success.innerHTML = response.data.message;
@@ -25,13 +30,13 @@ async function submitForm(event) {
     }
   } catch (error) {
     console.log(error.response.status);
-    if (error.response.status == 409) {
+    if (error.response.status === 409) {
       let success = document.getElementById("success");
       success.innerHTML = "Email is already taken";
       success.style.color = "red";
       document.getElementById("email").value = "";
     }
-    if (error.response.status == 400) {
+    if (error.response.status === 400) {
       let success = document.getElementById("success");
       success.innerHTML = "Some data is missing";
       success.style.color = "red";

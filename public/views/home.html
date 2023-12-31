@@ -13,71 +13,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     />
-    <style>
-      /* Custom CSS for the chat app */
-      body {
-        background-color: #f8f9fa; /* Light greyish background */
-        color: #333; /* Dark text color */
-      }
-
-      .navbar {
-        background-color: #007bff; /* Blue navbar background */
-        margin-bottom: 20px;
-      }
-
-      .navbar-brand {
-        font-weight: bold;
-        color: #fff; /* White text for brand */
-      }
-
-      .navbar-nav .nav-link {
-        color: #fff; /* White text for links */
-      }
-
-      .signup-btn {
-        background-color: grey; /* White for sign-up button */
-        border-color: #007bff; /* Blue border for sign-up button */
-        color: #007bff; /* Blue text color for sign-up button */
-        font-weight: bold;
-      }
-
-      .signup-btn:hover {
-        background-color: #0056b3; /* Darker blue on hover */
-        border-color: #0056b3;
-        color: #fff; /* White text color on hover */
-      }
-
-      .footer {
-        background-color: #007bff; /* Dark grey footer */
-        color: #fff; /* White text for footer */
-        padding: 20px 0;
-        width: 100%;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-      }
-      .topBtn {
-        background-color: white;
-        border-color: white;
-        color: #293241;
-        margin-left: 8px;
-      }
-      .topBtn:hover {
-        background-color: #ffc107;
-        color: white;
-        border-color: #3d5a80;
-      }
-      /* Media queries for responsiveness */
-      @media (max-width: 767px) {
-        .col-md-7 img {
-          max-width: 100%;
-          height: auto;
-        }
-        .col-md-5 {
-          text-align: center;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="/css/home.css" />
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -118,7 +54,12 @@
               >
             </li>
             <li class="nav-item">
-              <a class="topBtn btn py-1" href="#">Sign In</a>
+              <a
+                class="topBtn btn py-1"
+                data-toggle="modal"
+                data-target="#signin_modal"
+                >Sign In</a
+              >
             </li>
           </ul>
         </div>
@@ -136,11 +77,7 @@
             Where Every Message Ignites Happiness, Building Bonds One
             Conversation at a Time
           </p>
-          <button
-            class="btn btn-outline-primary btn-lg mb-3 mb-lg-0"
-            data-bs-toggle="modal"
-            data-bs-target="#signup_modal"
-          >
+          <button class="btn btn-outline-primary btn-lg mb-3 mb-lg-0">
             <a data-toggle="modal" data-target="#signup_modal">
               Sign up for free</a
             >
@@ -149,12 +86,10 @@
           <!-- Add a spacer -->
           <div style="margin-bottom: 10px"></div>
 
-          <button
-            class="btn btn-dark btn-lg"
-            data-bs-toggle="modal"
-            data-bs-target="#signin_modal"
-          >
-            Already have an account?
+          <button class="btn btn-dark btn-lg">
+            <a data-toggle="modal" data-target="#signin_modal">
+              Already have an account?</a
+            >
           </button>
         </div>
       </div>
@@ -252,9 +187,93 @@
         </div>
       </div>
     </div>
+
+    <!--Signin modal-->
+    <div class="modal fade" id="signin_modal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content background-image-container">
+          <div class="modal-header border-0 text-black">
+            <h2 id="formhead">Sign in here</h2>
+            <button
+              class="btn btn-close"
+              data-bs-dismiss="modal"
+              data-bs-target="#signin_modal"
+            ></button>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body text-black">
+            <!--Sigin form-->
+            <form
+              autocomplete="on"
+              id="signin_form"
+              onsubmit="loginForm(event)"
+            >
+              <div class="form-group mt-3">
+                <label for="userName"><i class="fas fa-user"></i> Email</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  name="loginEmail"
+                  id="loginEmail"
+                  placeholder="Email"
+                  required
+                />
+              </div>
+              <div class="form-group mt-3">
+                <label for="password"
+                  ><i class="fas fa-lock"></i> Password</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  name="loginPassword"
+                  id="loginPassword"
+                  placeholder="Password"
+                />
+              </div>
+              <div class="form-group text-center mt-4">
+                <input
+                  type="submit"
+                  class="btn btn-primary submit"
+                  value="Sign in"
+                />
+              </div>
+              <div class="form-group text-center mt-2">
+                <a
+                  href="#"
+                  id="forgot-password-button"
+                  data-bs-dismiss="modal"
+                  data-bs-toggle="modal"
+                  data-bs-target="#forgotPassword_modal"
+                  >Forgot password?</a
+                >
+              </div>
+              <div class="form-group text-center mt-2">
+                Not a member?
+                <a
+                  href="#"
+                  data-dismiss="modal"
+                  data-toggle="modal"
+                  data-target="#signup_modal"
+                  >Signup now</a
+                >
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
     <footer class="footer text-center">
       <div class="container-fluid">
-        <p>&copy; 2023 Group Chat. All Rights Reserved.</p>
+        <p>&copy; 2023 ChatterHub. All Rights Reserved.</p>
       </div>
     </footer>
 
@@ -265,6 +284,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <script src="../js/signUp.js"></script>
+    <script src="/js/signUp.js"></script>
+    <script src="/js/login.js"></script>
   </body>
 </html>
