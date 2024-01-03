@@ -15,9 +15,7 @@ async function messageSend() {
         headers: { Authorization: token },
       }
     );
-    setTimeout(() => {
-      chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
-    }, 0);
+    chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
   } catch (error) {
     console.log("something went wrong");
   }
@@ -111,9 +109,8 @@ async function getMessages() {
     console.log(error);
   }
 }
-
+setInterval(() => {
+  getMessages();
+}, 1000);
 messageSendBtn.addEventListener("click", messageSend);
 document.addEventListener("DOMContentLoaded", getMessages);
-
-// const token = localStorage.getItem("token");
-// console.log(token);
