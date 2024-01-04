@@ -8,5 +8,5 @@ router.post(
   userauthentication.authenticate,
   chatController.sendMessage
 );
-router.get("/getMessages", chatController.getMessages);
+router.get("/getMessages/:param", chatController.getMessages);
 module.exports = router;
