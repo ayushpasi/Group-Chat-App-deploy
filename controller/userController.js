@@ -2,6 +2,7 @@ const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const path = require("path");
 const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
 
 const userSignup = async (req, res) => {
   const { name, email, mobile, password } = req.body;
@@ -76,4 +77,24 @@ const postUserLogin = async (req, res) => {
   }
 };
 
-module.exports = { userSignup, getHomePage, postUserLogin };
+const getAlluser = async (req, res, next) => {
+  try {
+    const user = req.user;
+    const users = await UserModel.findAll({
+      attributes: ["id", "name", "email"],
+      where: {
+        id: {
+          [Op.not]: user.id,
+        },
+      },
+    });
+    return res
+      .status(200)
+      .json({ users, message: "All users succesfully fetched" });
+  } catch (error) {
+    console.log(error);
+    returnres.status(500).json({ message: "Internal Server error!" });
+  }
+};
+
+module.exports = { userSignup, getHomePage, postUserLogin, getAlluser };
