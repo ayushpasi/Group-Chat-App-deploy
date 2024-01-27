@@ -17,6 +17,10 @@ const GroupModel = sequelize.define("group", {
     type: Sequelize.STRING,
     allowNull: false,
   },
+  adminId: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+  },
 });
 
 module.exports = GroupModel;

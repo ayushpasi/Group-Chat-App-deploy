@@ -47,9 +47,7 @@ const getHomePage = async (req, res, next) => {
   }
 };
 const generateAccessToken = (id, name) => {
-  return jwt.sign({ userId: id, name: name }, process.env.TOKEN_SECRET, {
-    expiresIn: "1h",
-  });
+  return jwt.sign({ userId: id, name: name }, process.env.TOKEN_SECRET);
 };
 const postUserLogin = async (req, res) => {
   const { email, password } = req.body;
@@ -97,4 +95,14 @@ const getAlluser = async (req, res, next) => {
   }
 };
 
-module.exports = { userSignup, getHomePage, postUserLogin, getAlluser };
+const getcurrentuser = async (req, res) => {
+  const user = req.user;
+  res.status(200).json({ userId: user.id, user });
+};
+module.exports = {
+  userSignup,
+  getHomePage,
+  postUserLogin,
+  getAlluser,
+  getcurrentuser,
+};

@@ -106,8 +106,8 @@
             <input
               type="submit"
               class="btn btn-primary d-none"
-              data-bs-toggle="modal"
-              data-bs-target="#group_model"
+              data-toggle="modal"
+              data-target="#group_model"
               value="&#9998;"
               id="0"
             />
@@ -116,9 +116,9 @@
         <div
           class="chat-box card overflow-y-scroll rounded-5"
           id="chatBoxBody"
-          style="max-height: 350px; overflow-y: auto"
+          style="max-height: 450px; overflow-y: auto"
         >
-          <!-- Messages will appear here -->
+          <!-- Messages will  here -->
         </div>
         <form id="" class="input-group">
           <input
@@ -128,7 +128,7 @@
             placeholder="Type a message..."
           />
 
-          <button class="btn btn-primary" id="messageSendBtn" data-groupId="0">
+          <button class="btn btn-primary" id="0" data-btn="messageSendBtn">
             <i class="bi bi-send"></i>
           </button>
         </form>
@@ -208,6 +208,7 @@ You can leave this column</textarea
               class="close"
               data-dismiss="modal"
               aria-label="Close"
+              id="modal_closeBtn"
             >
               Close
             </button>

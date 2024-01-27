@@ -16,4 +16,9 @@ router.get(
   userController.getAlluser
 );
 
+router.get(
+  "/getCurrentUser",
+  userauthentication.authenticate,
+  userController.getcurrentuser
+);
 module.exports = router;

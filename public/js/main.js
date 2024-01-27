@@ -1,7 +1,11 @@
 const token = localStorage.getItem("token");
 const searchbar = document.getElementById("search_bar");
 const userMessage = document.getElementById("userMessage");
-const messageSendBtn = document.getElementById("messageSendBtn");
+const messageSendBtn = document.querySelector(
+  '.btn.btn-primary[data-btn="messageSendBtn"]'
+);
+const group_editbtn = group_headContainer.querySelector('input[type="submit"]');
+
 const chatBoxBody = document.getElementById("chatBoxBody");
 
 const showingAllUser = async () => {
@@ -25,6 +29,56 @@ const showingAllUser = async () => {
     </li>`;
     });
     user_list.innerHTML = text;
+  } catch (error) {
+    console.log(error);
+    alert(error.response.data.message);
+  }
+};
+
+const showingGroupDetails = async (e) => {
+  try {
+    const groupId = e.target.id;
+    user_list.parentElement.classList.remove("d-none");
+    const usersResponse = await axios.get("/user/getUsers", {
+      headers: { Authorization: token },
+    });
+    const memberApi = await axios(`/group/getGroupMembers?groupId=${groupId}`);
+
+    const groupMebers = memberApi.data.users;
+    const idSet = new Set(groupMebers.map((item) => item.id));
+    user_list.innerHTML = "";
+    let text = "";
+    const { users } = usersResponse.data;
+    users.forEach((user) => {
+      if (idSet.has(user.id)) {
+        text += `
+                <li class="list-group-item  d-flex  justify-content-between">
+                    <div class="d-flex  align-items-center justify-content-between">
+
+                        <h6><strong class="mb-1">${user.name}</strong></h6>
+                    </div>
+                    <input type="checkbox" class="form-check-inline" name="users" value="${user.email}" checked>
+                </li>`;
+      } else {
+        text += `
+                <li class="list-group-item  d-flex  justify-content-between">
+                    <div class="d-flex  align-items-center justify-content-between">
+
+                        <h6><strong class="mb-1">${user.name}</strong></h6>
+                    </div>
+                    <input type="checkbox" class="form-check-inline" name="users" value="${user.email}">
+                </li>`;
+      }
+    });
+    user_list.innerHTML = text;
+
+    const GroupApiresponse = await axios(`/group/getGroup?groupId=${groupId}`);
+    const { group } = GroupApiresponse.data;
+    modelElements.groupName.value = group.name;
+    model_submibtn.innerHTML = "Update Details";
+    model_heading.innerHTML = `Update ${group.name} Details`;
+    modelElements.editStatus.value = groupId;
+    modal_closeBtn.classList.add("d-none");
   } catch (error) {
     console.log(error);
     alert(error.response.data.message);
@@ -78,7 +132,9 @@ async function createGroup(e) {
         alert("Group successfully created");
       } else {
         const groupId = modelElements.editStatus.value;
-        await axios.post(`user/update-group?groupId=${groupId}`, data);
+        await axios.post(`/group/updateGroup?groupId=${groupId}`, data, {
+          headers: { Authorization: token },
+        });
 
         model_submibtn.innerHTML = "Create Group";
         model_heading.innerHTML = `Create new group`;
@@ -119,7 +175,7 @@ const getGroups = async () => {
       html += `               
     <button class="list-group-item list-group-item-action py-2" 
         data-bs-toggle="list">
-        <div class="d-flex w-100 align-items-center justify-content-between" >
+        <div class="d-flex w-100 align-items-center justify-content-between" id="${group.id}">
             
             <strong class="mb-1">${group.name}</strong>
             <small>${group.admin} is Admin</small>
@@ -131,10 +187,73 @@ const getGroups = async () => {
     console.log(error);
   }
 };
+
+const showGroupChat = async (e) => {
+  try {
+    const groupId = e.target.id;
+    // console.log(groupId);
+    const getUserResponse = await axios.get("/user/getCurrentUser", {
+      headers: { Authorization: token },
+    });
+    const userId = getUserResponse.data.userId;
+
+    if (groupId && groupId != "group_body") {
+      setupGroup(groupId, userId);
+      if (groupId == 0) {
+        ShowCommonChats();
+      } else {
+        showGroupChats(groupId);
+      }
+    } else {
+      console.log("no group id");
+    }
+  } catch (error) {
+    console.log(error);
+    alert(error.response.data.message);
+    // window.location = '/';
+  }
+};
+async function setupGroup(groupId, userId) {
+  try {
+    if (groupId == 0) {
+      group_heading.innerHTML = `Common Group`;
+      group_members.innerHTML = ` All Members`;
+      group_members.setAttribute(
+        "data-bs-original-title",
+        `All Members can access this group !`
+      );
+      messageSendBtn.id = groupId;
+
+      group_editbtn.classList.add("d-none");
+    } else {
+      const APIresponse = await axios(`/group/getGroup?groupId=${groupId}`);
+
+      const { group } = APIresponse.data;
+
+      group_heading.innerHTML = `${group.name}`;
+      group_members.innerHTML = "";
+
+      messageSendBtn.id = groupId;
+      if (group.adminId == userId) {
+        group_editbtn.id = groupId;
+
+        group_editbtn.classList.remove("d-none");
+      } else {
+        group_editbtn.classList.add("d-none");
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    alert(error.response.data.message);
+  }
+}
+
 getGroups();
 model_submibtn.addEventListener("click", createGroup);
 create_groupBtn.addEventListener("click", showingAllUser);
+group_editbtn.addEventListener("click", showingGroupDetails);
 searchbar.addEventListener("keyup", searchUser);
+group_body.addEventListener("click", showGroupChat);
 
 async function logout() {
   try {
@@ -148,20 +267,29 @@ async function logout() {
 logoutBtn.addEventListener("click", logout);
 
 //chat funtionality
-async function messageSend() {
+async function messageSend(e) {
   try {
+    e.preventDefault();
     const message = userMessage.value;
     const token = localStorage.getItem("token");
+    groupId = messageSendBtn.id;
+
     const res = await axios.post(
       "http://localhost:3000/chat/sendMessage",
       {
         message: message,
+        groupId: Number(groupId),
       },
       {
         headers: { Authorization: token },
       }
     );
-    chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
+    if (groupId == 0) {
+      ShowCommonChats();
+    } else {
+      showGroupChats(groupId);
+    }
+    // chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
   } catch (error) {
     console.log("something went wrong");
   }
@@ -180,123 +308,106 @@ function decodeToken(token) {
 
   return JSON.parse(jsonPayload);
 }
-async function getMessages() {
+async function ShowCommonChats() {
   try {
-    let param;
-    const localStorageChats = JSON.parse(localStorage.getItem("chats"));
-    if (localStorageChats) {
-      let array = JSON.parse(localStorage.getItem("chats"));
-      let length = JSON.parse(localStorage.getItem("chats")).length;
-      param = array[length - 1].id;
-    }
+    const localStorageChats = JSON.parse(localStorage.getItem("chats")) || [];
+    const lastMessageId = localStorageChats.length
+      ? localStorageChats[localStorageChats.length - 1].id
+      : 0;
+
     const res = await axios.get(
-      `http://localhost:3000/chat/getMessages/${param}`
+      `http://localhost:3000/chat/getMessages/${lastMessageId}`
     );
 
-    const chats = JSON.parse(localStorage.getItem("chats"));
-    if (!chats) {
-      localStorage.setItem("chats", JSON.stringify(res.data.messages));
-    } else {
-      res.data.messages.forEach((message) => {
-        chats.push(message);
-      });
-      localStorage.setItem("chats", JSON.stringify(chats));
-    }
-    if (res) {
-      res.data.messages.forEach((message) => {
-        displayMessages(message);
-        chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
-      });
-    }
+    const newMessages = res.data.messages;
+    const mergedChats = localStorageChats.concat(newMessages);
+
+    localStorage.setItem("chats", JSON.stringify(mergedChats.slice(-1000)));
+
+    const token = localStorage.getItem("token");
+    const userId = decodeToken(token).userId;
+    displayChatsOnScreen(mergedChats, userId);
   } catch (error) {
     console.error(error);
+    // Handle error here, e.g., show an alert and redirect to home
+    alert(error.response.data.message);
+    window.location = "/";
   }
 }
 
-setInterval(() => {
-  getMessages();
-}, 1000);
-
-async function getMessagesFromLocalStorage() {
-  const messages = JSON.parse(localStorage.getItem("chats"));
-
-  const token = localStorage.getItem("token");
-  const decodedToken = decodeToken(token);
-  const userId = decodedToken.userId;
+async function showGroupChats(groupId) {
+  try {
+    const res = await axios.get(`/chat/getGroupMessages?groupId=${groupId}`);
+    chatBoxBody.innerHTML = "";
+    const token = localStorage.getItem("token");
+    const userId = decodeToken(token).userId;
+    displayChatsOnScreen(res.data.messages, userId);
+  } catch (error) {
+    console.log(error);
+    alert(error.response.data.message);
+  }
+}
+// display messages on screen
+function displayChatsOnScreen(chats, userId) {
   chatBoxBody.innerHTML = "";
 
-  if (messages) {
-    messages.forEach((message) => {
-      displayMessages(message);
-    });
-  }
+  chats.forEach((chat) => {
+    displayChat(chat, userId);
+  });
+
+  chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
 }
 
-// display messages on screen
-const displayMessages = (message) => {
-  const token = localStorage.getItem("token");
-  const decodedToken = decodeToken(token);
-  const userId = decodedToken.userId;
-  if (message.userId == userId) {
-    const div = document.createElement("div");
-    div.classList.add("user-message", "justify-content-end");
-    chatBoxBody.appendChild(div);
+function displayChat(chat, userId) {
+  const div = document.createElement("div");
+  div.classList.add(
+    chat.userId === userId ? "user-message" : "incoming-message"
+  );
+  chatBoxBody.appendChild(div);
 
-    const messageSendby = document.createElement("span");
-    messageSendby.classList.add(
-      "d-flex",
-      "justify-content-end",
-      "px-3",
-      "mb-1",
-      "text-uppercase",
-      "small",
-      "text-black"
-    );
-    messageSendby.appendChild(document.createTextNode("You"));
-    div.appendChild(messageSendby);
+  const messageSendby = document.createElement("span");
+  messageSendby.classList.add(
+    "d-flex",
+    chat.userId === userId ? "justify-content-end" : "justify-content-start",
+    "px-3",
+    "mb-1",
+    "text-uppercase",
+    "small",
+    "text-black"
+  );
+  messageSendby.appendChild(
+    document.createTextNode(chat.userId === userId ? "You" : chat.name)
+  );
+  div.appendChild(messageSendby);
 
-    const messageBox = document.createElement("div");
-    const messageText = document.createElement("div");
+  const messageBox = document.createElement("div");
+  const messageText = document.createElement("div");
 
-    messageBox.classList.add("d-flex", "justify-content-end", "mb-4");
+  messageBox.classList.add(
+    "d-flex",
+    chat.userId === userId ? "justify-content-end" : "justify-content-start",
+    "mb-4"
+  );
 
-    messageText.classList.add("msg_cotainer_send");
-    messageText.appendChild(document.createTextNode(message.message));
+  messageText.classList.add(
+    chat.userId === userId ? "msg_cotainer_send" : "msg_cotainer"
+  );
+  messageText.appendChild(document.createTextNode(chat.message));
 
-    messageBox.appendChild(messageText);
-    div.appendChild(messageBox);
-  } else {
-    const div = document.createElement("div");
-    div.classList.add("incoming-message");
-    chatBoxBody.appendChild(div);
+  messageBox.appendChild(messageText);
+  div.appendChild(messageBox);
 
-    const messageSendby = document.createElement("span");
-    messageSendby.classList.add(
-      "d-flex",
-      "justify-content-start",
-      "px-3",
-      "mb-1",
-      "text-uppercase",
-      "small",
-      "text-black"
-    );
-    messageSendby.appendChild(document.createTextNode(message.name));
-    div.appendChild(messageSendby);
-
-    const messageBox = document.createElement("div");
-    const messageText = document.createElement("div");
-
-    messageBox.classList.add("d-flex", "justify-content-start", "mb-4");
-
-    messageText.classList.add("msg_cotainer");
-    messageText.appendChild(document.createTextNode(message.message));
-
-    messageBox.appendChild(messageText);
-    div.appendChild(messageBox);
+  if (chat.userId !== userId) {
     setTimeout(() => {
       chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
     }, 0);
   }
-};
+}
+
+// You can call this function periodically using setInterval
+// setInterval(() => {
+//   ShowCommonChats();
+// }, 1000);
+
 messageSendBtn.addEventListener("click", messageSend);
-document.addEventListener("DOMContentLoaded", getMessagesFromLocalStorage);
+document.addEventListener("DOMContentLoaded", ShowCommonChats);

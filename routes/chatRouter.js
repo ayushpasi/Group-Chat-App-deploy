@@ -8,5 +8,12 @@ router.post(
   userauthentication.authenticate,
   chatController.sendMessage
 );
+
 router.get("/getMessages/:param", chatController.getMessages);
+
+router.get(
+  "/getGroupMessages",
+
+  chatController.getGroupMessages
+);
 module.exports = router;
