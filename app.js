@@ -1,10 +1,14 @@
 const express = require("express");
 const dotenv = require("dotenv");
+const http = require("http");
+const socketIo = require("socket.io");
+// Import Server from socket.io
+
 dotenv.config();
 const userRouter = require("./routes/userRouter");
 const chatRouter = require("./routes/chatRouter");
 const groupRouter = require("./routes/groupRouter");
-const sequelize = require("./util/database");
+const sequelize = require("./util/database"); // Make sure to destructure sequelize from database object
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
@@ -13,7 +17,11 @@ const Chat = require("./models/chatModel");
 const Group = require("./models/groupModel");
 const UserGroup = require("./models/userGroup");
 
+const websocketService = require("./services/websocket");
+
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
 app.use(express.static("public"));
 app.use(
@@ -29,6 +37,8 @@ app.use("/", userRouter);
 app.use("/user", userRouter);
 app.use("/chat", chatRouter);
 app.use("/group", groupRouter);
+
+io.on("connection", websocketService);
 
 //Relationships between Tables
 User.hasMany(Chat, { onDelete: "CASCADE", hooks: true });
@@ -47,8 +57,9 @@ UserGroup.belongsTo(Group);
 sequelize
   .sync()
   .then(() => {
-    app.listen(3000, () => {
-      console.log("http://localhost:3000");
+    server.listen(3000, () => {
+      // Change app.listen to httpServer.listen
+      console.log("Server is running on http://localhost:3000");
     });
   })
   .catch((err) => {

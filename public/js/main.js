@@ -7,6 +7,17 @@ const messageSendBtn = document.querySelector(
 const group_editbtn = group_headContainer.querySelector('input[type="submit"]');
 
 const chatBoxBody = document.getElementById("chatBoxBody");
+const socket = io(window.location.origin);
+socket.on("common-message", () => {
+  if (messageSendBtn.id == 0) {
+    ShowCommonChats();
+  }
+});
+socket.on("group-message", (groupId) => {
+  if (messageSendBtn.id == groupId) {
+    showGroupChats(groupId);
+  }
+});
 
 const showingAllUser = async () => {
   try {

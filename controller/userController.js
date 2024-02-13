@@ -6,11 +6,7 @@ const { Op } = require("sequelize");
 
 const userSignup = async (req, res) => {
   const { name, email, mobile, password } = req.body;
-  console.log(req.body.name);
-  console.log("Name:", name);
-  console.log("Email:", email);
-  console.log("Password:", password);
-  console.log("Mobile:", mobile);
+
   if (!name || !email || !mobile || !password) {
     return res.status(400).json({ error: "Some data is missing" });
   }

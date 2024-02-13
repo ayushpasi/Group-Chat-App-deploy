@@ -125,18 +125,11 @@ const getGroupMembersbyId = async (req, res, next) => {
 const updateGroup = async (req, res, next) => {
   const t = await sequelize.transaction(); // Start a transaction
   try {
-    const groupId = req.query.groupId; // Assuming the group ID is provided in the request params
+    const groupId = req.query.groupId; //  group ID is provided in the request params
     const groupName = req.body.groupName;
     const admin = req.user.name;
     const adminId = req.user.id;
     const members = req.body.members;
-
-    // Log values for debugging
-    console.log("groupId:", groupId);
-    console.log("groupName:", groupName);
-    console.log("admin:", admin);
-    console.log("adminId:", adminId);
-    console.log("members:", members);
 
     const membersArray = Array.isArray(members) ? members : [members];
 
