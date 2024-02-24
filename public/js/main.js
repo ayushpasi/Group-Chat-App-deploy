@@ -7,7 +7,9 @@ const messageSendBtn = document.querySelector(
 const group_editbtn = group_headContainer.querySelector('input[type="submit"]');
 
 const chatBoxBody = document.getElementById("chatBoxBody");
+
 const socket = io(window.location.origin);
+
 socket.on("common-message", () => {
   if (messageSendBtn.id == 0) {
     ShowCommonChats();
@@ -202,7 +204,7 @@ const getGroups = async () => {
 const showGroupChat = async (e) => {
   try {
     const groupId = e.target.id;
-    // console.log(groupId);
+    console.log(groupId);
     const getUserResponse = await axios.get("/user/getCurrentUser", {
       headers: { Authorization: token },
     });
@@ -273,6 +275,7 @@ async function logout() {
   } catch (error) {
     console.log(error);
   }
+  user;
 }
 
 logoutBtn.addEventListener("click", logout);
@@ -281,27 +284,50 @@ logoutBtn.addEventListener("click", logout);
 async function messageSend(e) {
   try {
     e.preventDefault();
-    const message = userMessage.value;
     const token = localStorage.getItem("token");
     groupId = messageSendBtn.id;
+    let file = document.getElementById("fileInput").files[0];
 
-    const res = await axios.post(
-      "http://localhost:3000/chat/sendMessage",
-      {
-        message: message,
-        groupId: Number(groupId),
-      },
-      {
-        headers: { Authorization: token },
+    if (file) {
+      if (file && file.type.startsWith("image/")) {
+        const formData = new FormData();
+        formData.append("image", file);
+        formData.append("GroupId", groupId);
+        const imageResponse = await axios.post(
+          "http://localhost:3000/chat/postImage",
+          formData,
+          {
+            headers: { Authorization: token },
+          }
+        );
+      } else {
+        alert("Please select a valid image file.");
       }
-    );
+    } else {
+      const message = userMessage.value;
+
+      const res = await axios.post(
+        "/chat/sendMessage",
+        {
+          message: message,
+          groupId: Number(groupId),
+        },
+        {
+          headers: { Authorization: token },
+        }
+      );
+    }
+    document.getElementById("messageForm").reset();
     if (groupId == 0) {
+      socket.emit("new-common-message");
       ShowCommonChats();
     } else {
+      socket.emit("new-group-message", groupId);
       showGroupChats(groupId);
     }
     // chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
   } catch (error) {
+    console.log(error);
     console.log("something went wrong");
   }
 }
@@ -392,27 +418,55 @@ function displayChat(chat, userId) {
   div.appendChild(messageSendby);
 
   const messageBox = document.createElement("div");
-  const messageText = document.createElement("div");
+  const messageContent = document.createElement("div");
 
   messageBox.classList.add(
     "d-flex",
-    chat.userId === userId ? "justify-content-end" : "justify-content-start",
-    "mb-4"
+    "flex-column",
+    chat.userId === userId ? "align-items-end" : "align-items-start",
+    "mb-2"
   );
 
-  messageText.classList.add(
+  messageContent.classList.add(
     chat.userId === userId ? "msg_cotainer_send" : "msg_cotainer"
   );
-  messageText.appendChild(document.createTextNode(chat.message));
 
-  messageBox.appendChild(messageText);
+  if (chat.isImage) {
+    const image = document.createElement("img");
+    image.src = chat.message;
+    image.classList.add("image-message");
+    messageContent.appendChild(image);
+  } else {
+    const textNode = document.createTextNode(chat.message);
+    messageContent.appendChild(textNode);
+  }
+
+  messageBox.appendChild(messageContent);
   div.appendChild(messageBox);
+
+  // Format and display timestamp
+  const timestamp = document.createElement("small");
+  timestamp.classList.add("timestamp", "text-muted", "ml-3", "mr-3");
+  timestamp.textContent = formatTimestamp(chat.createdAt);
+  messageBox.appendChild(timestamp);
 
   if (chat.userId !== userId) {
     setTimeout(() => {
       chatBoxBody.scrollTop = chatBoxBody.scrollHeight;
     }, 0);
   }
+}
+
+// Function to format the timestamp
+function formatTimestamp(timestamp) {
+  const date = new Date(timestamp);
+  const options = {
+    hour: "numeric",
+    minute: "numeric",
+    month: "short",
+    day: "numeric",
+  };
+  return date.toLocaleDateString("en-US", options);
 }
 
 // You can call this function periodically using setInterval

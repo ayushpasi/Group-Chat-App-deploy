@@ -14,10 +14,7 @@ async function submitForm(event) {
   };
 
   try {
-    const response = await axios.post(
-      "http://localhost:3000/user/signup",
-      data
-    );
+    const response = await axios.post("/user/signup", data);
 
     if (response.status === 200) {
       let success = document.getElementById("success");

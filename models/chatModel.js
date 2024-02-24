@@ -14,6 +14,10 @@ const ChatModel = sequelize.define("chat", {
   message: {
     type: Sequelize.STRING,
   },
+  isImage: {
+    type: Sequelize.BOOLEAN,
+    defaultValue: false,
+  },
 });
 
 module.exports = ChatModel;

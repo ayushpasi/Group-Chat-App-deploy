@@ -115,3 +115,24 @@ body {
     text-align: center;
   }
 }
+.overflow-y-scroll {
+  scrollbar-width: thin;
+  /* "auto" can also be used for browser default */
+  scrollbar-color: #aaa #fff;
+  /* Change the colors to your preference */
+}
+.attach_btn {
+  border-radius: 25px 0 0 25px !important;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  border: 0 !important;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.image-message {
+  width: 200px; /* Adjust as needed */
+  height: 200px; /* Adjust as needed */
+  display: block;
+  border-radius: 5px;
+  object-fit: contain; /* Ensures the image fits within the container without cropping */
+}

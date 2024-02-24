@@ -58,7 +58,6 @@ sequelize
   .sync()
   .then(() => {
     server.listen(3000, () => {
-      // Change app.listen to httpServer.listen
       console.log("Server is running on http://localhost:3000");
     });
   })

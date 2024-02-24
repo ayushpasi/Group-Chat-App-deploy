@@ -42,6 +42,14 @@ const getHomePage = async (req, res, next) => {
     console.log(error);
   }
 };
+
+const getMainPage = async (req, res, next) => {
+  try {
+    res.sendFile(path.join(__dirname, "../", "public", "views", "main.html"));
+  } catch (error) {
+    console.log(error);
+  }
+};
 const generateAccessToken = (id, name) => {
   return jwt.sign({ userId: id, name: name }, process.env.TOKEN_SECRET);
 };
@@ -101,4 +109,5 @@ module.exports = {
   postUserLogin,
   getAlluser,
   getcurrentuser,
+  getMainPage,
 };
