@@ -54,8 +54,11 @@ Group.hasMany(UserGroup);
 UserGroup.belongsTo(User);
 UserGroup.belongsTo(Group);
 
+const job = require("./services/corn");
+job.start();
+
 sequelize
-  .sync()
+  .sync({ alter: true })
   .then(() => {
     server.listen(3000, () => {
       console.log("Server is running on http://localhost:3000");
