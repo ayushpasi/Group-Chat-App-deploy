@@ -5,13 +5,13 @@ const ArchivedChat = require("../models/archeivedChatModel");
 
 const job = new CronJob("0 0 * * *", async function () {
   // Runs at midnight every day
-  const fiveSecondsAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); // 1 day ago
+  const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000); // 1 day ago
 
   try {
     const chats = await Chat.findAll({
       where: {
         createdAt: {
-          [Sequelize.Op.lt]: fiveSecondsAgo,
+          [Sequelize.Op.lt]: yesterday,
         },
       },
     });
@@ -31,7 +31,7 @@ const job = new CronJob("0 0 * * *", async function () {
     await Chat.destroy({
       where: {
         createdAt: {
-          [Sequelize.Op.lt]: fiveSecondsAgo,
+          [Sequelize.Op.lt]: yesterday,
         },
       },
     });
