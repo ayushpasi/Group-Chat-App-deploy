@@ -252,12 +252,11 @@
               </div>
               <div class="form-group text-center mt-2">
                 <a
-                  href="#"
-                  id="forgot-password-button"
-                  data-bs-dismiss="modal"
-                  data-bs-toggle="modal"
-                  data-bs-target="#forgotPassword_modal"
-                  >Forgot password?</a
+                  data-dismiss="modal"
+                  data-toggle="modal"
+                  data-target="#forgotPassword_modal"
+                >
+                  Forgot password?</a
                 >
               </div>
               <div class="form-group text-center mt-2">
@@ -275,6 +274,77 @@
         </div>
       </div>
     </div>
+
+    <!--Forgot Password Modal-->
+    <div class="modal fade" id="forgotPassword_modal">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content background-image-container">
+          <div class="modal-header border-0 text-black" id="headDiv">
+            <h2>Reset Your Password</h2>
+            <button
+              class="btn btn-close"
+              data-bs-dismiss="modal"
+              data-bs-target="#forgotPasswordModal"
+            ></button>
+          </div>
+          <div class="modal-body text-black">
+            <!--Forgot form-->
+            <form autocomplete="on" id="forgot_form" onsubmit="return false">
+              <div class="form-group mt-3">
+                <label for="userName"><i class="fas fa-user"></i> Email</label>
+                <input
+                  id="resetPasswordEmail"
+                  type="text"
+                  class="form-control"
+                  name="email"
+                  placeholder="email address"
+                  required
+                />
+              </div>
+              <div class="form-group text-center mt-4">
+                <input
+                  type="submit"
+                  class="btn btn-primary submit"
+                  value="Submit"
+                  id="resetPasswordLinkBtn"
+                />
+              </div>
+              <div
+                class="alert bg-warning alert-dismissible fade show mt-3 d-none"
+                role="alert"
+                id="alert1"
+              >
+                <strong>Holy guacamole!</strong> user is not exist enter correct
+                credentials.
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div
+                class="alert bg-success alert-dismissible fade show mt-3 d-none"
+                role="alert"
+                id="alert2"
+              >
+                <strong>Holy guacamole!</strong> Check mail for resetting
+                password.
+                <span class="text-warning">link is valid for 5 min</span>
+                <button
+                  type="button"
+                  href="/home"
+                  class="btn-close"
+                  data-bs-dismiss="alert"
+                  aria-label="Close"
+                ></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer class="footer text-center">
       <div class="container-fluid">
         <p>&copy; 2023 ChatterHub. All Rights Reserved.</p>
@@ -290,5 +360,6 @@
 
     <script src="/js/signUp.js"></script>
     <script src="/js/login.js"></script>
+    <script src="/js/forgotPassword.js"></script>
   </body>
 </html>

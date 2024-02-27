@@ -8,6 +8,8 @@ dotenv.config();
 const userRouter = require("./routes/userRouter");
 const chatRouter = require("./routes/chatRouter");
 const groupRouter = require("./routes/groupRouter");
+const resetPasswordRouter = require("./routes/resetPasswordRouter");
+
 const sequelize = require("./util/database"); // Make sure to destructure sequelize from database object
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -16,7 +18,7 @@ const User = require("./models/userModel");
 const Chat = require("./models/chatModel");
 const Group = require("./models/groupModel");
 const UserGroup = require("./models/userGroup");
-
+const ResetPassword = require("./models/resetPasswordModel");
 const websocketService = require("./services/websocket");
 
 const app = express();
@@ -38,6 +40,8 @@ app.use("/user", userRouter);
 app.use("/chat", chatRouter);
 app.use("/group", groupRouter);
 
+app.use("/password", resetPasswordRouter);
+
 io.on("connection", websocketService);
 
 //Relationships between Tables
@@ -53,6 +57,9 @@ Group.hasMany(UserGroup);
 
 UserGroup.belongsTo(User);
 UserGroup.belongsTo(Group);
+
+ResetPassword.belongsTo(User);
+User.hasMany(ResetPassword);
 
 const job = require("./services/corn");
 job.start();
