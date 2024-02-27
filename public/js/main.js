@@ -293,13 +293,9 @@ async function messageSend(e) {
         const formData = new FormData();
         formData.append("image", file);
         formData.append("GroupId", groupId);
-        const imageResponse = await axios.post(
-          "http://localhost:3000/chat/postImage",
-          formData,
-          {
-            headers: { Authorization: token },
-          }
-        );
+        const imageResponse = await axios.post("/chat/postImage", formData, {
+          headers: { Authorization: token },
+        });
       } else {
         alert("Please select a valid image file.");
       }
@@ -352,9 +348,7 @@ async function ShowCommonChats() {
       ? localStorageChats[localStorageChats.length - 1].id
       : 0;
 
-    const res = await axios.get(
-      `http://localhost:3000/chat/getMessages/${lastMessageId}`
-    );
+    const res = await axios.get(`/chat/getMessages/${lastMessageId}`);
 
     const newMessages = res.data.messages;
     const mergedChats = localStorageChats.concat(newMessages);
