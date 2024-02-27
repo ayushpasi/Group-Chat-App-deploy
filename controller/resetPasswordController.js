@@ -46,7 +46,7 @@ const sendMail = async (req, res) => {
       htmlContent: `
           <p>Hello,</p>
           <p>Please follow the link to reset your password.</p>
-          <p><a href="${process.env.WEBSITE}password/resetPasswordPage/{{params.requestId}}">Reset Password</a></p>
+          <p><a href="${process.env.WEBSITE}/password/resetPasswordPage/{{params.requestId}}">Reset Password</a></p>
           <p>If you did not request this, please ignore this email.</p>
         `,
       params: {
